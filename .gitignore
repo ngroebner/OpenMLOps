@@ -1,3 +1,5 @@
+my_vars.tfvars
+
 **/.cache/
 .idea
 # Local .terraform directories

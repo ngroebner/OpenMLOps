@@ -1,12 +1,25 @@
-resource "kubernetes_namespace" "daskhub_namespace" {
-  metadata {
-    name = "daskhub"
+terraform {
+  backend "s3" { 
+    bucket = "mlops-straboai"
+    key = "open-mlops.tfstate" 
+    region = "us-west-2"
   }
 }
 
-module "dask-jupyterhub" {
-    source    = "./modules/dask-jupyterhub"
-    namespace = kubernetes_namespace.daskhub_namespace.metadata[0].name
+provider kubernetes {
+  config_path = "~/.kube/config"
+}
+
+
+resource "kubernetes_namespace" "daskhub_namespace" {
+  metadata {
+  name = "daskhub"
+  }
+}
+
+module "dask-jupyterhub" { 
+  source = "./modules/dask-jupyterhub"
+  namespace = kubernetes_namespace.daskhub_namespace.metadata[0].name
 }
 
 resource "kubernetes_service_account" "daskhub-sa" {
